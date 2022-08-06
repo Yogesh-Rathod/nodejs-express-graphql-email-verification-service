@@ -1,12 +1,12 @@
-var express = require('express');
-var { graphqlHTTP } = require('express-graphql');
-var { buildSchema } = require('graphql');
+import express from 'express';
+import { graphqlHTTP } from 'express-graphql';
+import { buildSchema } from 'graphql';
 require('dotenv').config();
-var axios = require('axios');
+import axios from 'axios';
 
 const BASE_URL = 'https://api.apilayer.com/email_verification/';
 
-const validateEmail = (email) => {
+const validateEmail = (email: string) => {
   return String(email)
     .toLowerCase()
     .match(
@@ -14,13 +14,13 @@ const validateEmail = (email) => {
     );
 };
 
-const fetchResponseByURL = (args) => {
+const fetchResponseByURL = (args: any) => {
   if (validateEmail(args.email)) {
     const API_URL = `${BASE_URL}${args.email}`;
     var myHeaders = { headers: { apikey: 'dd6FYmTefFTcw1y1ZMKbxKq8nJAbAIlH' } };
-    return axios(API_URL, myHeaders).then(res => {
+    return axios(API_URL, myHeaders).then((res: any) => {
       return res. data;
-    }).catch(e => {
+    }).catch((e: any) => {
       throw new Error(e);
     });
   } else {
@@ -52,8 +52,8 @@ var schema = buildSchema(`
 `);
 
 var resolvers = {
-  checkEmailValidation: (root, args) => {
-    return fetchResponseByURL(root, args);
+  checkEmailValidation: (root: any, args: any) => {
+    return fetchResponseByURL(root);
   },
 };
 
