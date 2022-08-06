@@ -2,9 +2,9 @@ import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
 import { buildSchema } from 'graphql';
 require('dotenv').config();
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
-const BASE_URL = 'https://api.apilayer.com/email_verification/';
+const API_BASE_URL = process.env.API_BASE_URL;
 
 const validateEmail = (email: string) => {
   return String(email)
@@ -16,10 +16,10 @@ const validateEmail = (email: string) => {
 
 const fetchResponseByURL = (args: any) => {
   if (validateEmail(args.email)) {
-    const API_URL = `${BASE_URL}${args.email}`;
-    var myHeaders = { headers: { apikey: 'dd6FYmTefFTcw1y1ZMKbxKq8nJAbAIlH' } };
-    return axios(API_URL, myHeaders).then((res: any) => {
-      return res. data;
+    const API_URL = `${API_BASE_URL}${args.email}`;
+    var myHeaders: AxiosRequestConfig = { headers: { apikey: process.env.API_SECRET_KEY || '' } };
+    return axios(API_URL, myHeaders).then(res => {
+      return res.data;
     }).catch((e: any) => {
       throw new Error(e);
     });
@@ -52,7 +52,7 @@ var schema = buildSchema(`
 `);
 
 var resolvers = {
-  checkEmailValidation: (root: any, args: any) => {
+  checkEmailValidation: (root: any) => {
     return fetchResponseByURL(root);
   },
 };
